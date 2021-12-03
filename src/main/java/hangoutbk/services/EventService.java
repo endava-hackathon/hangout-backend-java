@@ -14,9 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class EventService {
@@ -40,6 +38,69 @@ public class EventService {
         return eventDTOS;
     }
 
+    public List<EventDTO> findEventsConfirmed() {
+        List<Event> eventList = eventRepository.findAll();
+
+        List<Event> eventsConfirmed = new ArrayList<>();
+
+        for(Event e: eventList){
+            if(e.isConfirmationStatus()){
+                eventsConfirmed.add(e);
+            }
+        }
+
+        List<EventDTO> eventDTOS =new ArrayList<>();
+        eventsConfirmed.forEach( u->{
+            eventDTOS.add(EventBuilder.toEventDTO(u));
+        });
+
+        return eventDTOS;
+    }
+
+    public List<EventDTO> findEventsConfirmedByStartDate() {
+        List<Event> eventList = eventRepository.findAll();
+
+        List<Event> eventsConfirmed = new ArrayList<>();
+
+        for(Event e: eventList){
+            if(e.isConfirmationStatus()){
+                eventsConfirmed.add(e);
+            }
+        }
+
+        List<EventDTO> eventDTOS =new ArrayList<>();
+        eventsConfirmed.forEach( u->{
+            eventDTOS.add(EventBuilder.toEventDTO(u));
+        });
+
+        Comparator<EventDTO> mapComparator = Comparator.comparing(EventDTO::getStartDate);
+        eventDTOS.sort(mapComparator);
+
+        return eventDTOS;
+    }
+
+    public List<EventDTO> findEventsConfirmedByEndDate() {
+        List<Event> eventList = eventRepository.findAll();
+
+        List<Event> eventsConfirmed = new ArrayList<>();
+
+        for(Event e: eventList){
+            if(e.isConfirmationStatus()){
+                eventsConfirmed.add(e);
+            }
+        }
+
+        List<EventDTO> eventDTOS =new ArrayList<>();
+        eventsConfirmed.forEach( u->{
+            eventDTOS.add(EventBuilder.toEventDTO(u));
+        });
+
+        Comparator<EventDTO> mapComparator = Comparator.comparing(EventDTO::getEndDate);
+        eventDTOS.sort(mapComparator);
+
+        return eventDTOS;
+    }
+
     public UUID insert(EventDTO eventDTO) {
         Event event = EventBuilder.toEntity(eventDTO);
         event = eventRepository.save(event);
@@ -54,7 +115,10 @@ public class EventService {
             LOGGER.error("Event with name {} was not found in db", event.getName());
             throw new ResourceNotFoundException(Event.class.getSimpleName() + " with id: " +  event.getId());
         }
-        return EventBuilder.toEventDTO(event);
+        if(event.isConfirmationStatus())
+             return EventBuilder.toEventDTO(event);
+        else
+            throw new ResourceNotFoundException(Event.class.getSimpleName() + " with id: " +  event.getId());
     }
 
     public List<EventDTO> findEventByCategory(String eventCategory) {
@@ -63,7 +127,7 @@ public class EventService {
         List<Event> eventsByCategory = new ArrayList<>();
 
         for(Event e: eventList){
-            if((e.getCategory().getName()).equals(eventCategory)){
+            if((e.getCategory().getName()).equals(eventCategory) && e.isConfirmationStatus()){
                 eventsByCategory.add(e);
             }
         }

@@ -36,6 +36,27 @@ public class EventController {
         return new ResponseEntity<>(dtos, HttpStatus.FOUND);
     }
 
+    @GetMapping("/getAllConfirmed")
+    public ResponseEntity<List<EventDTO>> getEventsConfirmed() {
+        List<EventDTO> dtos = eventService.findEventsConfirmed();
+        LOGGER.info("searching for events");
+        return new ResponseEntity<>(dtos, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/getAllConfirmedByStartDate")
+    public ResponseEntity<List<EventDTO>> getEventsConfirmedByStartDate() {
+        List<EventDTO> dtos = eventService.findEventsConfirmedByStartDate();
+        LOGGER.info("searching for events");
+        return new ResponseEntity<>(dtos, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/getAllConfirmedByEndDate")
+    public ResponseEntity<List<EventDTO>> getEventsConfirmedByEndDate() {
+        List<EventDTO> dtos = eventService.findEventsConfirmedByEndDate();
+        LOGGER.info("searching for events");
+        return new ResponseEntity<>(dtos, HttpStatus.FOUND);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<UUID> insertEvent(@RequestBody EventDTO eventDTO) {
         LOGGER.info("inserting event: {}", eventDTO);
