@@ -12,6 +12,4 @@ import java.util.UUID;
 public class CategoryDTO {
 
     private String name;
-
-    private Event event;
 }

@@ -41,7 +41,7 @@ public class Person{
     @Column(name = "role", nullable = false)
     private String role;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private List<Event> events;
 }

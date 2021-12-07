@@ -10,13 +10,11 @@ import java.util.UUID;
 public class CategoryBuilder {
 
     public static CategoryDTO toCategoryDTO(Category category) {
-        return new CategoryDTO(category.getName(),
-                category.getEvent());
+        return new CategoryDTO(category.getName());
     }
 
     public static Category toEntity(CategoryDTO categoryDTO) {
         return new Category(UUID.randomUUID(),
-            categoryDTO.getName(),
-                categoryDTO.getEvent());
+            categoryDTO.getName());
     }
 }

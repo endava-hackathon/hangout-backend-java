@@ -42,7 +42,7 @@ public class Event {
     @Column(name = "confirmation_status", nullable = false)
     private boolean confirmationStatus;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -50,5 +50,10 @@ public class Event {
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonBackReference
     private Person person;
+
+    /*public Event(String name, LocalDateTime startDate, LocalDateTime endDate, float price, String description, Category category, Person person){
+        this.name=name;
+        this.startDate
+    }*/
 
 }

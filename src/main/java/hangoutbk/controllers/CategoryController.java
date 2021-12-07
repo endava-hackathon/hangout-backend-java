@@ -3,6 +3,7 @@ package hangoutbk.controllers;
 import hangoutbk.dtos.CategoryDTO;
 import hangoutbk.dtos.EventDTO;
 import hangoutbk.dtos.PersonDTO;
+import hangoutbk.entities.Category;
 import hangoutbk.services.CategoryService;
 import hangoutbk.services.EventService;
 import hangoutbk.services.PersonService;
@@ -41,5 +42,11 @@ public class CategoryController {
         LOGGER.info("inserting category: {}", categoryDTO);
         UUID personID = categoryService.insert(categoryDTO);
         return new ResponseEntity<>(personID, HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/getCategory/{name}")
+    public ResponseEntity<CategoryDTO> getPerson(@PathVariable("name") String name) {
+        CategoryDTO dto = categoryService.findCategoryByName(name);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

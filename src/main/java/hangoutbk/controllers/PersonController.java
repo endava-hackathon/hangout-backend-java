@@ -41,6 +41,7 @@ public class PersonController {
     @PostMapping("/add")
     public ResponseEntity<UUID> insertPerson(@RequestBody PersonDTO personDTO) {
         LOGGER.info("inserting person: {}", personDTO);
+        personDTO.setRole("user");
         UUID personID = personService.insert(personDTO);
         return new ResponseEntity<>(personID, HttpStatus.CREATED);
     }
@@ -68,16 +69,18 @@ public class PersonController {
         currentPerson.setEmail(personDTO.getEmail());
         currentPerson.setPassword(personDTO.getPassword());
 
-        //update pentru events
-        if(personDTO.getEvents() != null){
-            List<Event> eventList = currentPerson.getEvents();
-            eventList.addAll(personDTO.getEvents());
-            currentPerson.setEvents(eventList);
-        }
-
         personService.update(currentPerson);
 
         return new ResponseEntity<String>("Person updated successfully", HttpStatus.OK);
+    }
+
+    //add event to person
+    @RequestMapping(value = "/addEvent/{email}/{name}", method = RequestMethod.POST)
+    public ResponseEntity<String> addEvent(@PathVariable("email") String email,@PathVariable("name") String name){
+
+        personService.addEvent(email, name);
+
+        return new ResponseEntity<String>("Person added new event", HttpStatus.OK);
     }
 
     @PostMapping("/delete")

@@ -29,7 +29,7 @@ public class EventDTO {
 
     private boolean confirmationStatus;
 
-    private Category category;
+    private String category;
 
     private Person person;
 }

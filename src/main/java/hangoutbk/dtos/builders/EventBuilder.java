@@ -1,13 +1,24 @@
 package hangoutbk.dtos.builders;
 
 import hangoutbk.dtos.EventDTO;
+import hangoutbk.entities.Category;
 import hangoutbk.entities.Event;
+import hangoutbk.repositories.CategoryRepository;
 import lombok.Builder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Builder
 public class EventBuilder {
+
+   // private static CategoryRepository categoryRepository;
 
     public static EventDTO toEventDTO(Event event) {
         return new EventDTO(event.getName(),
@@ -16,7 +27,7 @@ public class EventBuilder {
                 event.getPrice(),
                 event.getDescription(),
                 event.isConfirmationStatus(),
-                event.getCategory(),
+                event.getCategory().getName(),
                 event.getPerson());
     }
 
@@ -28,7 +39,7 @@ public class EventBuilder {
                 eventDTO.getPrice(),
                 eventDTO.getDescription(),
                 eventDTO.isConfirmationStatus(),
-                eventDTO.getCategory(),
+                null,
                 eventDTO.getPerson());
     }
 }

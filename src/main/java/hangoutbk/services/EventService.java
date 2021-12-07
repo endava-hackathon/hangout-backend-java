@@ -2,13 +2,11 @@ package hangoutbk.services;
 
 import hangoutbk.controllers.handlers.exceptions.model.ResourceNotFoundException;
 import hangoutbk.dtos.EventDTO;
-import hangoutbk.dtos.PersonDTO;
-import hangoutbk.dtos.builders.EventBuilder;
-import hangoutbk.dtos.builders.PersonBuilder;
+import hangoutbk.dtos.builders.EventBuilder;;
+import hangoutbk.entities.Category;
 import hangoutbk.entities.Event;
-import hangoutbk.entities.Person;
+import hangoutbk.repositories.CategoryRepository;
 import hangoutbk.repositories.EventRepository;
-import hangoutbk.repositories.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +19,14 @@ public class EventService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
     private final EventRepository eventRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public EventService(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository, CategoryRepository categoryRepository) {
         this.eventRepository = eventRepository;
+        this.categoryRepository = categoryRepository;
     }
+
 
     public List<EventDTO> findEvents() {
         List<Event> eventList = eventRepository.findAll();
@@ -102,7 +103,10 @@ public class EventService {
     }
 
     public UUID insert(EventDTO eventDTO) {
+        Category category=categoryRepository.findByName(eventDTO.getCategory());
         Event event = EventBuilder.toEntity(eventDTO);
+        event.setConfirmationStatus(false);
+        event.setCategory(category);
         event = eventRepository.save(event);
         LOGGER.debug("Event with id {} was inserted in db", event.getId());
         return event.getId();
@@ -145,10 +149,35 @@ public class EventService {
         return eventDTOS;
     }
 
-    public UUID update(EventDTO eventDTO) {
-        Event event = EventBuilder.toEntity(eventDTO);
+    public UUID update(EventDTO eventDTO,String name) {
+        Category category=categoryRepository.findByName(eventDTO.getCategory());
+        Event event = eventRepository.findEventByName(name);
+        event.setCategory(category);
+
+        event.setName(eventDTO.getName());
+        event.setDescription(eventDTO.getDescription());
+        event.setPrice(eventDTO.getPrice());
+        event.setStartDate(eventDTO.getStartDate());
+        event.setEndDate(eventDTO.getEndDate());
+
         event = eventRepository.save(event);
         LOGGER.debug("Event with id {} was updated in db", event.getId());
         return event.getId();
+    }
+
+    public UUID updateConfirmation(EventDTO eventDTO) {
+        Category category=categoryRepository.findByName(eventDTO.getCategory());
+        Event event = eventRepository.findEventByName(eventDTO.getName());
+        event.setCategory(category);
+        event.setConfirmationStatus(true);
+        event = eventRepository.save(event);
+        LOGGER.debug("Event with id {} was updated in db", event.getId());
+        return event.getId();
+    }
+
+    public void delete(String eventName) {
+        Event event = eventRepository.findEventByName(eventName);
+        eventRepository.deleteById(event.getId());
+        LOGGER.debug("Event with id {} was deleted in db", event.getId());
     }
 }

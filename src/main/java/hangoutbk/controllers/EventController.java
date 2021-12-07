@@ -1,11 +1,7 @@
 package hangoutbk.controllers;
 
-import hangoutbk.dtos.CategoryDTO;
 import hangoutbk.dtos.EventDTO;
-import hangoutbk.dtos.PersonDTO;
-import hangoutbk.entities.Event;
 import hangoutbk.services.EventService;
-import hangoutbk.services.PersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +67,6 @@ public class EventController {
     }
 
     /// UPDATE
-
     @RequestMapping(value = "/update/{name}", method = RequestMethod.POST)
     public ResponseEntity<String> update(@PathVariable("name") String name, @RequestBody EventDTO eventDTO){
         LOGGER.info("updating event: {}", eventDTO);
@@ -82,15 +77,7 @@ public class EventController {
             return new ResponseEntity<String>("Event not found",HttpStatus.NOT_FOUND);
         }
 
-        //updatare colane eveniment
-        currentEvent.setName(eventDTO.getName());
-        currentEvent.setCategory(eventDTO.getCategory());
-        currentEvent.setDescription(eventDTO.getDescription());
-        currentEvent.setPrice(eventDTO.getPrice());
-        currentEvent.setStartDate(eventDTO.getStartDate());
-        currentEvent.setEndDate(eventDTO.getEndDate());
-
-        eventService.update(currentEvent);
+        eventService.update(eventDTO,name);
 
         return new ResponseEntity<String>("Evenet updated successfully", HttpStatus.OK);
     }
@@ -98,7 +85,7 @@ public class EventController {
     //Confirm OR Reject Event as admin
     //status este boolean
     @RequestMapping(value = "/confirm/{name}", method = RequestMethod.POST)
-    public ResponseEntity<String> update(@PathVariable("name") String name, boolean status){
+    public ResponseEntity<String> confirmEvent(@PathVariable("name") String name){
         EventDTO currentEvent = eventService.findEventByName(name);
 
         if (currentEvent == null){
@@ -106,12 +93,24 @@ public class EventController {
             return new ResponseEntity<String>("Event not found",HttpStatus.NOT_FOUND);
         }
 
-        //se seteaza statusul
-        currentEvent.setConfirmationStatus(status);
+        //se seteaza statusul la true de la false
+      //  currentEvent.setConfirmationStatus(true);
 
-        eventService.update(currentEvent);
+        eventService.updateConfirmation(currentEvent);
 
-        return new ResponseEntity<String>("Evenet confirmed/rejected successfully", HttpStatus.OK);
+        return new ResponseEntity<String>("Evenet confirmed successfully", HttpStatus.OK);
     }
 
-}
+    ///DELETE EVENT BY NAME
+
+  //  @PostMapping("/delete")
+    @RequestMapping(value = "/delete/{name}", method = RequestMethod.POST)
+    public ResponseEntity<String> delete(@PathVariable("name") String name) {
+        LOGGER.info("deleting event with name: {}", name);
+
+        eventService.delete(name);
+
+        return new ResponseEntity<String>("Event deleted successfully",HttpStatus.OK);
+    }
+
+    }

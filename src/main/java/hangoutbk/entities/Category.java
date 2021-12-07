@@ -27,7 +27,7 @@ public class Category {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToOne(mappedBy = "category")
+/*    @OneToOne(mappedBy = "category")
     @JsonBackReference
-    private Event event;
+    private Event event;*/
 }
